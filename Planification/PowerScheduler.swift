@@ -29,13 +29,13 @@ enum Weekday: Int, CaseIterable, Identifiable {
 
     var localizedName: String {
         switch self {
-        case .monday:    return "Lundi"
-        case .tuesday:   return "Mardi"
-        case .wednesday: return "Mercredi"
-        case .thursday:  return "Jeudi"
-        case .friday:    return "Vendredi"
-        case .saturday:  return "Samedi"
-        case .sunday:    return "Dimanche"
+        case .monday:    return String(localized: "Monday")
+        case .tuesday:   return String(localized: "Tuesday")
+        case .wednesday: return String(localized: "Wednesday")
+        case .thursday:  return String(localized: "Thursday")
+        case .friday:    return String(localized: "Friday")
+        case .saturday:  return String(localized: "Saturday")
+        case .sunday:    return String(localized: "Sunday")
         }
     }
 }
@@ -53,9 +53,9 @@ enum ShutdownAction: String, CaseIterable, Identifiable {
 
     var localizedName: String {
         switch self {
-        case .shutdown: return "Extinction"
-        case .sleep:    return "Suspension d'activité"
-        case .restart:  return "Redémarrage"
+        case .shutdown: return String(localized: "Shut Down")
+        case .sleep:    return String(localized: "Sleep")
+        case .restart:  return String(localized: "Restart")
         }
     }
 }
@@ -69,11 +69,11 @@ enum SchedulerError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .noDaySelected:
-            return "Aucun jour sélectionné. Activez au moins un jour pour chaque colonne."
+            return String(localized: "No day selected. Enable at least one day in each column.")
         case .commandFailed(let message):
             return message
         case .cancelled:
-            return "Opération annulée (mot de passe non fourni)."
+            return String(localized: "Operation cancelled (no password provided).")
         }
     }
 }
@@ -178,7 +178,7 @@ struct PowerScheduler {
             let data = pipe.fileHandleForReading.readDataToEndOfFile()
             return String(data: data, encoding: .utf8) ?? ""
         } catch {
-            return "Impossible de lire la planification : \(error.localizedDescription)"
+            return String(localized: "Unable to read the schedule: \(error.localizedDescription)")
         }
     }
 
@@ -308,7 +308,7 @@ struct PowerScheduler {
 
         var errorInfo: NSDictionary?
         guard let script = NSAppleScript(source: source) else {
-            throw SchedulerError.commandFailed("Impossible de créer le script.")
+            throw SchedulerError.commandFailed(String(localized: "Unable to create the script."))
         }
 
         script.executeAndReturnError(&errorInfo)
@@ -318,7 +318,7 @@ struct PowerScheduler {
             if let code = errorInfo[NSAppleScript.errorNumber] as? Int, code == -128 {
                 throw SchedulerError.cancelled
             }
-            let message = errorInfo[NSAppleScript.errorMessage] as? String ?? "Erreur inconnue"
+            let message = errorInfo[NSAppleScript.errorMessage] as? String ?? String(localized: "Unknown error")
             throw SchedulerError.commandFailed(message)
         }
     }

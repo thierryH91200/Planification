@@ -29,7 +29,7 @@ struct ContentView: View {
             HStack(alignment: .top, spacing: 20) {
                 // Colonne gauche : démarrage / réveil
                 DayScheduleColumn(
-                    title: "Démarrage ou réveil",
+                    title: "Start up or wake",
                     days: $wakeDays,
                     hour: $wakeHour,
                     minute: $wakeMinute
@@ -71,9 +71,7 @@ struct ContentView: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundStyle(.yellow)
                 .font(.title2)
-            Text("Ce panneau vous permet de configurer des horaires pour le démarrage, "
-                 + "la suspension d'activité ou l'arrêt de votre Mac. Ces réglages "
-                 + "utilisent la commande système « pmset » et demandent votre mot de passe.")
+            Text("This panel lets you schedule the start-up, sleep, or shutdown of your Mac. These settings use the system command \u{201C}pmset\u{201D} and require your password.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
         }
@@ -81,14 +79,14 @@ struct ContentView: View {
 
     private var footer: some View {
         HStack {
-            Button("Voir la planification actuelle") {
+            Button("Show current schedule") {
                 showCurrentSchedule()
             }
             Spacer()
-            Button("Annuler la planification") {
+            Button("Cancel schedule") {
                 cancelSchedule()
             }
-            Button("Appliquer") {
+            Button("Apply") {
                 applySchedule()
             }
             .keyboardShortcut(.defaultAction)
@@ -132,10 +130,10 @@ struct ContentView: View {
                 shutdownMinute: shutdownMinute,
                 action: action
             )
-            alert = AlertItem(title: "Planification appliquée",
+            alert = AlertItem(title: String(localized: "Schedule applied"),
                               message: PowerScheduler.currentSchedule())
         } catch {
-            alert = AlertItem(title: "Erreur",
+            alert = AlertItem(title: String(localized: "Error"),
                               message: error.localizedDescription)
         }
     }
@@ -143,24 +141,24 @@ struct ContentView: View {
     private func cancelSchedule() {
         do {
             try PowerScheduler.cancel()
-            alert = AlertItem(title: "Planification annulée",
-                              message: "Toutes les planifications répétitives ont été supprimées.")
+            alert = AlertItem(title: String(localized: "Schedule cancelled"),
+                              message: String(localized: "All repeating schedules have been removed."))
         } catch {
-            alert = AlertItem(title: "Erreur",
+            alert = AlertItem(title: String(localized: "Error"),
                               message: error.localizedDescription)
         }
     }
 
     private func showCurrentSchedule() {
         let schedule = PowerScheduler.currentSchedule()
-        alert = AlertItem(title: "Planification actuelle",
-                          message: schedule.isEmpty ? "Aucune planification." : schedule)
+        alert = AlertItem(title: String(localized: "Current schedule"),
+                          message: schedule.isEmpty ? String(localized: "No schedule set.") : schedule)
     }
 }
 
 /// Une colonne : liste de jours avec interrupteurs + sélecteur d'heure.
 private struct DayScheduleColumn: View {
-    var title: String? = nil
+    var title: LocalizedStringKey? = nil
     var titleView: AnyView? = nil
     @Binding var days: Set<Weekday>
     @Binding var hour: Int
@@ -210,7 +208,7 @@ private struct DayScheduleColumn: View {
                     }
                     .labelsHidden()
                     .frame(width: 64)
-                    Text("heure(s)")
+                    Text("hour(s)")
 
                     Picker("", selection: $minute) {
                         ForEach(0..<60, id: \.self) { m in
