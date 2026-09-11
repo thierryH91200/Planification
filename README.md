@@ -4,6 +4,14 @@ A small macOS app to schedule your Mac's **start-up / wake** and **shutdown / sl
 
 Under the hood it is a graphical front end for the built-in macOS command [`pmset repeat`](https://ss64.com/osx/pmset.html).
 
+## Screenshots
+
+| English | French |
+| :---: | :---: |
+| ![Planification in English](Doc/screenshot-en.png) | ![Planification en français](Doc/screenshot-fr.png) |
+
+The app is localized and automatically follows the system language.
+
 ## Features
 
 - Schedule a **wake or power-on** time and a **shutdown / sleep / restart** time.
